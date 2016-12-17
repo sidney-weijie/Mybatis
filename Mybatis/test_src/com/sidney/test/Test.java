@@ -9,6 +9,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import com.sidney.mybatis.inter.IUserOperation;
+import com.sidney.mybatis.model.Article;
 import com.sidney.mybatis.model.User;
 
 public class Test {
@@ -37,7 +38,25 @@ public class Test {
 	    	// testUser.getUserList("%");
 	    	 // testUser.updateUser(5);
 	    	 
-	    	 testUser.testSelectUserByID(5);
+	    	// testUser.testSelectUserByID(5);
+	    	 //testUser.addUser();
+	    	 
+	    	 testUser.getUserArticles(1);
+	    }
+	    
+	    public void getUserArticles(int userid){
+	        SqlSession session = sqlSessionFactory.openSession();
+	        try {
+	            IUserOperation userOperation=session.getMapper(IUserOperation.class);          
+	            List<Article> articles = userOperation.getUserArticles(userid);
+	            for(Article article:articles){
+	                System.out.println(article.getTitle()+":"+article.getContent()+
+	                        ":作者是:"+article.getUser().getUserName()+":地址:"+
+	                         article.getUser().getUserAddress());
+	            }
+	        } finally {
+	            session.close();
+	        }
 	    }
 	    
 	    public void updateUser(int id){
@@ -69,7 +88,7 @@ public class Test {
 	    public void addUser(){
 	        User user=new User();
 	        user.setUserAddress("广东省深圳市南山区深南花园1栋801");
-	        user.setUserName("张三");
+	        user.setUserName("李四");
 	        user.setUserAge("25");
 	        SqlSession session = sqlSessionFactory.openSession();
 	        try {
