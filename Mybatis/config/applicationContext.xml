@@ -1,33 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"  
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"  
-    xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"  
-    xmlns:mybatis="http://www.mybatis.org/schema/mybatis"  
-    xsi:schemaLocation="http://www.springframework.org/schema/beans    
-     http://www.springframework.org/schema/beans/spring-beans.xsd    
-     http://www.springframework.org/schema/context    
-     http://www.springframework.org/schema/context/spring-context.xsd    
-     http://www.springframework.org/schema/aop   
-     http://www.springframework.org/schema/aop/spring-aop.xsd">  
-<!--本示例采用DBCP连接池，应预先把DBCP的jar包复制到工程的lib目录下。 --> 
+<beans xmlns="http://www.springframework.org/schema/beans" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:aop="http://www.springframework.org/schema/aop" 
+    xmlns:tx="http://www.springframework.org/schema/tx" 
+    xmlns:context="http://www.springframework.org/schema/context" 
+    xmlns:p="http://www.springframework.org/schema/p" 
+    xsi:schemaLocation="  
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd  
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd  
+            http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd  
+            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd"  
+            default-autowire="byName" default-lazy-init="false"> 
 
-  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+
+
+  <!--本示例采用DBCP连接池，应预先把DBCP的jar包复制到工程的lib目录下。 -->   
+    <context:property-placeholder	location="classpath:database.properties" />
+	
+ <!--  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
      <property name="driverClassName" value="com.mysql.jdbc.Driver"/> 
      <property name="url" value="jdbc:mysql://127.0.0.1:3306/mytest?characterEncoding=utf8"/>
      <property name="username" value="root"/> 
      <property name="password" value="sidney"/> 
-  </bean> 
+  </bean>  -->
+  
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close" p:driverClassName="com.mysql.jdbc.Driver"
+		p:url="jdbc:mysql://127.0.0.1:3306/mytest?characterEncoding=utf8" 
+		p:username="root" p:password="sidney"
+		p:maxActive="10" p:maxIdle="10">
+	</bean>
+	
+  
+  <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	  <property name="dataSource" ref="dataSource" />
+	</bean>
+  
   <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"> 
      <!--dataSource属性指定要用到的连接池--> 
      <property name="dataSource" ref="dataSource"/> 
      <!--configLocation属性指定mybatis的核心配置文件--> 
-     <property name="configLocation" value="Configuration.xml"/> 
+     <property name="configLocation" value="classpath:Configuration.xml"/> 
+      <!-- 所有配置的mapper文件 -->
+     <property name="mapperLocations" value="classpath*:com/sidney/mybatis/mapper/*.xml" />
   </bean> 
-
+  
+   <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+	 <property name="basePackage" value="classpath*:com.sidney.mybatis.inter" />	 
+  </bean>
+  
+  
+<!-- 
   <bean id="userMapper" class="org.mybatis.spring.mapper.MapperFactoryBean"> 
-     <!--sqlSessionFactory属性指定要用到的SqlSessionFactory实例--> 
+     sqlSessionFactory属性指定要用到的SqlSessionFactory实例 
      <property name="sqlSessionFactory" ref="sqlSessionFactory" /> 
-     <!--mapperInterface属性指定映射器接口，用于实现此接口并生成映射器对象--> 
+     mapperInterface属性指定映射器接口，用于实现此接口并生成映射器对象 
      <property name="mapperInterface" value="com.sidney.mybatis.inter.IUserOperation" />
-  </bean> 
+  </bean>  -->
  </beans>

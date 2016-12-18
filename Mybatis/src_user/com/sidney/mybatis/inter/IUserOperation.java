@@ -2,6 +2,9 @@ package com.sidney.mybatis.inter;
 
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 import com.sidney.mybatis.model.Article;
 import com.sidney.mybatis.model.User;
 

@@ -9,6 +9,7 @@
     </typeAliases> 
     
 
+<!-- 与Spring集成后这些可交给Spring来做 
     <environments default="development">
         <environment id="development">
         <transactionManager type="JDBC"/>
@@ -19,9 +20,9 @@
             <property name="password" value="sidney"/>
             </dataSource>
         </environment>
-    </environments>
+    </environments> 
     
     <mappers>
         <mapper resource="com/sidney/mybatis/model/User.xml"/>
-    </mappers>
+    </mappers>  -->
 </configuration>
